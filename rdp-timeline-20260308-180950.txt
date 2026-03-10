@@ -1,0 +1,55 @@
+﻿RDP timeline around latest authentication event
+Center event time: 2026-03-08 18:09:50
+Window: 2026-03-08 18:06:50 to 2026-03-08 18:12:50
+
+2026-03-08 18:09:50.174 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 131 | Information | The server accepted a new TCP connection from client 192.168.1.237:62068.
+2026-03-08 18:09:50.175 | Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational | ID 261 | Information | Listener RDP-Tcp received a connection
+2026-03-08 18:09:50.252 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 143 | Warning | TCP socket WRITE operation failed, error 64
+2026-03-08 18:09:50.252 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 226 | Warning | RDP_TCP: An error was encountered when transitioning from StateUnknown in response to Event_Disconnect (error code 0x80070040).
+2026-03-08 18:09:50.252 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 142 | Warning | TCP socket READ operation failed, error 64
+2026-03-08 18:09:50.253 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 102 | Information | The server has terminated main RDP connection with the client.
+2026-03-08 18:09:50.253 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 145 | Information | During this connection, server has not sent data or graphics update for 0 seconds (Idle1: 0, Idle2: 0).
+2026-03-08 18:09:50.253 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpinpt has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:09:50.253 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpcmd has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:09:50.253 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::CoreInput has been closed between the server and the client on transport tunnel: 1.
+2026-03-08 18:09:50.253 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdplic has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:09:50.295 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 131 | Information | The server accepted a new TCP connection from client 192.168.1.237:62069.
+2026-03-08 18:09:50.296 | Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational | ID 261 | Information | Listener RDP-Tcp received a connection
+2026-03-08 18:09:50.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 101 | Warning | The network characteristics detection function has been disabled because of Reason Code: 2(Server Configuration)..
+2026-03-08 18:09:50.328 | Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational | ID 1149 | Information | Remote Desktop Services: User authentication succeeded: User: Domain: Source Network Address: 192.168.1.237
+2026-03-08 18:09:50.332 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 40 | Information | Session 1 has been disconnected, reason code 5
+2026-03-08 18:09:50.686 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 24 | Information | Remote Desktop Services: Session has been disconnected: User: DESKTOP-DS9NSON\theod Session ID: 1 Source Network Address: LOCAL
+2026-03-08 18:10:12.308 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::Video::Control::v08.01 has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:10:12.308 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::Video::Data::v08.01 has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:10:12.308 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::Geometry::v08.01 has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.326 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 142 | Warning | TCP socket READ operation failed, error 10054
+2026-03-08 18:11:12.326 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 226 | Warning | RDP_TCP: An error was encountered when transitioning from StateUnknown in response to Event_Disconnect (error code 0x80072746).
+2026-03-08 18:11:12.326 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 226 | Warning | RDP_SEC: An error was encountered when transitioning from FStateProcessingData in response to FEventPostReceiveFailed (error code 0x80072746).
+2026-03-08 18:11:12.326 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 36 | Error | An error occurred when transitioning from DisconnectedLoggedOn in response to EvConnected. (ErrorCode 0x80070102)
+2026-03-08 18:11:12.327 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 226 | Warning | RDP_SEC: An error was encountered when transitioning from FStatePassthrough in response to FEventCheckAndCompleteReadsFailed (error code 0x8007139F).
+2026-03-08 18:11:12.328 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 40 | Information | Session 1 has been disconnected, reason code 2147952454
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 102 | Information | The server has terminated main RDP connection with the client.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 145 | Information | During this connection, server has not sent data or graphics update for 0 seconds (Idle1: 0, Idle2: 0).
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpinpt has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpcmd has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::CoreInput has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdplic has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpgrfx has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel railenc has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::Frame_Buffer::Control::v08.01 has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::Graphics has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel Microsoft::Windows::RDS::MouseCursor has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel ECHO has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpdr has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel rdpsnd has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.328 | Microsoft-Windows-RemoteDesktopServices-RdpCoreTS/Operational | ID 148 | Information | Channel cliprdr has been closed between the server and the client on transport tunnel: 0.
+2026-03-08 18:11:12.400 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 36 | Error | An error occurred when transitioning from CsrConnected in response to EvCsrInitialized. (ErrorCode 0x800708CA)
+2026-03-08 18:11:12.426 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 40 | Information | Session 3 has been disconnected, reason code 12
+2026-03-08 18:11:16.033 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 41 | Information | Begin session arbitration: User: DESKTOP-DS9NSON\theod Session ID: 2
+2026-03-08 18:11:16.035 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 40 | Information | Session 2 has been disconnected, reason code 0
+2026-03-08 18:11:16.099 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 40 | Information | Session 1 has been disconnected, reason code 5
+2026-03-08 18:11:16.329 | Microsoft-Windows-TerminalServices-LocalSessionManager/Operational | ID 25 | Information | Remote Desktop Services: Session reconnection succeeded: User: DESKTOP-DS9NSON\theod Session ID: 1 Source Network Address: LOCAL
+
+Known code meanings:
+- 0x80072746 / 10054: An existing connection was forcibly closed by the remote host
+- Error 64: The specified network name is no longer available
