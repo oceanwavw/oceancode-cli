@@ -7,7 +7,7 @@ const readline = require('readline');
 function checkTool(name) {
   try {
     const cmd = getPlatform() === 'windows' ? `where ${name}` : `which ${name}`;
-    execSync(cmd, { stdio: ['pipe', 'pipe', 'pipe'] });
+    execSync(cmd, { stdio: ['pipe', 'pipe', 'pipe'], shell: true });
     return true;
   } catch {
     return false;

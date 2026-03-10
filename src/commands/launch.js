@@ -78,7 +78,9 @@ async function run(args) {
 
   if (dev.venv_path && dev.entry) {
     // Python app: use venv python binary directly
-    const venvConfig = config.venv && config.venv[app];
+    // Find matching venv config by path (keys are package names, not app names)
+    const venvEntries = Object.values(config.venv || {});
+    const venvConfig = venvEntries.find(v => v.path === dev.venv_path);
     let venvDir;
     if (venvConfig) {
       venvDir = venvConfig.dir[platform];
