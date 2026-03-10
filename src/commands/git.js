@@ -48,7 +48,6 @@ function parseArgs(args) {
     if (a === '-t' && args[i + 1]) { flags.target = path.resolve(args[++i]); continue; }
     if (a === '--config' && args[i + 1]) { flags.config = path.resolve(args[++i]); continue; }
     if (!a.startsWith('-')) {
-      if (!repoArg && a.includes(',')) { repoArg = a; continue; }
       flags.positional.push(a);
       continue;
     }
@@ -57,7 +56,7 @@ function parseArgs(args) {
 
   if (!flags.target) { console.error('Error: missing -t <path>'); process.exit(1); }
 
-  return { action, repoArg, flags };
+  return { action, flags };
 }
 
 function git(cwd, cmd) {
@@ -65,15 +64,20 @@ function git(cwd, cmd) {
 }
 
 async function run(args) {
-  const { action, repoArg, flags } = parseArgs(args);
+  const { action, flags } = parseArgs(args);
   const config = loadConfig(flags.config);
 
-  let actualRepoArg = repoArg;
-  if (!actualRepoArg && flags.positional.length > 0 && config.repos[flags.positional[0]]) {
-    actualRepoArg = flags.positional.shift();
+  // First positional may be a repo filter (single name or comma-delimited)
+  let repoArg = null;
+  if (flags.positional.length > 0) {
+    const candidate = flags.positional[0];
+    const names = candidate.split(',').map(n => n.trim());
+    if (names.every(n => config.repos[n])) {
+      repoArg = flags.positional.shift();
+    }
   }
 
-  const repos = resolveRepos(config, actualRepoArg);
+  const repos = resolveRepos(config, repoArg);
   let passed = 0, failed = 0, skipped = 0;
 
   for (let i = 0; i < repos.length; i++) {

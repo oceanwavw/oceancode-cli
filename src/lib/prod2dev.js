@@ -71,7 +71,7 @@ async function prod2dev(flags) {
   if (deleteCandidates.length > 0) {
     const content = [
       '# Files in dev (allowlisted) but missing from prod',
-      '# Review this list, then run: node sync_repo.js prune --dev <path> --deletelist .prod_deletes',
+      '# Review this list, then run: oceancode sync prune <repo> -s <source> -t <target>',
       '# Remove lines for files you want to keep.',
       '',
       ...deleteCandidates,
