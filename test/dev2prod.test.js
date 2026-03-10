@@ -63,6 +63,16 @@ describe('dev2prod', () => {
     assert.ok(!(await fs.pathExists(path.join(prodDir, 'src/index.js'))));
   });
 
+  test('works with non-existent prod path and mirror', async () => {
+    await fs.remove(prodDir);
+    const newProdDir = prodDir + '-new';
+    const code = await dev2prod({ dev: devDir, prod: newProdDir, mirror: true });
+    assert.strictEqual(code, 0);
+    assert.ok(await fs.pathExists(path.join(newProdDir, 'src/index.js')));
+    assert.ok(await fs.pathExists(path.join(newProdDir, '.prodroot')));
+    prodDir = newProdDir; // so afterEach cleans it up
+  });
+
   test('skips unchanged files', async () => {
     await dev2prod({ dev: devDir, prod: prodDir });
     const stat1 = await fs.stat(path.join(prodDir, 'src/index.js'));
