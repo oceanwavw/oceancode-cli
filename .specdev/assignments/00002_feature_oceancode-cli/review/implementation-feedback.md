@@ -9,3 +9,23 @@
 
 ### Addressed from changelog
 - (none -- first round)
+
+## Round 2
+
+**Verdict:** needs-changes
+
+### Findings
+1. [F2.1][CRITICAL] `git` still fails to reject an unknown single repo selector for actions that do not consume a positional arg (for example `status` or `init`). In [src/commands/git.js](/mnt/h/oceanwave/scripts/src/commands/git.js#L70), the first positional is treated as repo filter only when all names exist; otherwise it remains an action arg and [resolveRepos](/mnt/h/oceanwave/scripts/src/commands/git.js#L80) runs against all repos. This reproduces the original risk from F1.2 (silent fan-out to all repos instead of an explicit unknown-repo error).
+
+### Addressed from changelog
+- [F1.3] Fixed: `.prod_deletes` guidance now references `oceancode sync prune ...` in [src/lib/prod2dev.js](/mnt/h/oceanwave/scripts/src/lib/prod2dev.js#L74).
+
+## Round 3
+
+**Verdict:** approved
+
+### Findings
+1. None.
+
+### Addressed from changelog
+- [F2.1] Fixed: `git` action positional parsing now rejects unknown repo selectors instead of silently fanning out to all repos for zero-positional actions.
