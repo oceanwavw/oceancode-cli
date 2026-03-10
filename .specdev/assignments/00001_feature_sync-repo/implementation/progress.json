@@ -1,0 +1,62 @@
+{
+  "plan_file": "/mnt/h/oceanwave/scripts/.specdev/assignments/00001_feature_sync-repo/breakdown/plan.md",
+  "total_tasks": 8,
+  "tasks": [
+    {
+      "number": 1,
+      "status": "completed",
+      "started_at": "2026-03-10T05:10:54Z",
+      "completed_at": "2026-03-10T05:12:11Z",
+      "summary": "Created package.json, installed micromatch and fs-extra, created sync_repo.js with CLI arg parsing, created lib/ and test/ dirs"
+    },
+    {
+      "number": 2,
+      "status": "completed",
+      "started_at": "2026-03-10T05:12:17Z",
+      "completed_at": "2026-03-10T05:14:40Z",
+      "summary": "Created lib/shared.js and test/shared.test.js — 13 tests passing for normalizePath, parseProdinclude, isFileMatch, shouldSkipFile"
+    },
+    {
+      "number": 3,
+      "status": "completed",
+      "started_at": "2026-03-10T05:12:17Z",
+      "completed_at": "2026-03-10T05:15:54Z",
+      "summary": "Created lib/walker.js and test/walker.test.js — 3 tests passing for walkTree with pruning"
+    },
+    {
+      "number": 4,
+      "status": "completed",
+      "started_at": "2026-03-10T05:16:08Z",
+      "completed_at": "2026-03-10T05:17:33Z",
+      "summary": "Created lib/guards.js and test/guards.test.js — 7 tests passing for direction guards"
+    },
+    {
+      "number": 5,
+      "status": "completed",
+      "started_at": "2026-03-10T05:17:40Z",
+      "completed_at": "2026-03-10T05:20:31Z",
+      "summary": "Created lib/dev2prod.js and test/dev2prod.test.js — 5 tests passing"
+    },
+    {
+      "number": 6,
+      "status": "completed",
+      "started_at": "2026-03-10T05:17:40Z",
+      "completed_at": "2026-03-10T05:20:32Z",
+      "summary": "Created lib/prod2dev.js and test/prod2dev.test.js — 4 tests passing"
+    },
+    {
+      "number": 7,
+      "status": "completed",
+      "started_at": "2026-03-10T05:20:46Z",
+      "completed_at": "2026-03-10T05:22:27Z",
+      "summary": "Created lib/prune.js and test/prune.test.js — 8 tests passing including symlink escape, path traversal, dry-run"
+    },
+    {
+      "number": 8,
+      "status": "completed",
+      "started_at": "2026-03-10T05:20:47Z",
+      "completed_at": "2026-03-10T05:23:30Z",
+      "summary": "Created test/integration.test.js — full round-trip test passing"
+    }
+  ]
+}

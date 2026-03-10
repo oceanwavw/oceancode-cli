@@ -1,17 +1,13 @@
 {
-  "name": "scripts",
+  "name": "oceancode",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "description": "OceanWave workspace CLI",
+  "bin": { "oceancode": "./bin/oceancode.js" },
   "type": "commonjs",
+  "scripts": { "test": "node --test test/" },
   "dependencies": {
     "fs-extra": "^11.3.4",
+    "js-yaml": "^4.1.1",
     "micromatch": "^4.0.8"
   }
 }

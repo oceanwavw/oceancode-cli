@@ -31,8 +31,8 @@ The tool replaces the hardcoded `sync_to_prod.bat` with a generic, config-driven
 ### Commands
 
 ```
-node sync_repo.js dev2prod --dev <path> --prod <path> [--mirror] [--dry-run] [--verbose]
-node sync_repo.js prod2dev --dev <path> --prod <path> [--dry-run] [--verbose]
+node sync_repo.js dev2prod --dev <path> --prod <path> [--mirror] [--force] [--dry-run] [--verbose]
+node sync_repo.js prod2dev --dev <path> --prod <path> [--force] [--dry-run] [--verbose]
 node sync_repo.js prune --dev <path> --deletelist <file> [--dry-run]
 ```
 
@@ -59,7 +59,7 @@ README.md
 
 ### Hardcoded Safety Negations
 
-Always excluded regardless of `.prodinclude` content. User cannot override:
+Always excluded regardless of `.prodinclude` content. User cannot override. Applied in **both directions** (`dev2prod` and `prod2dev`):
 
 ```
 .git/**
@@ -72,6 +72,16 @@ node_modules/**
 .prodroot
 .prod_deletes
 ```
+
+### Path Normalization
+
+All relative paths are normalized internally to forward-slash (`/`) separators, no `..` components, no leading `./`. This applies to:
+- File tree walks (dev and prod)
+- `.prodinclude` pattern matching
+- `.prod_deletes` entries (written and read with `/` separators)
+- Delete list validation in `prune`
+
+On Windows, backslash paths from `fs` APIs are converted to `/` before matching or writing.
 
 ### Marker Files
 
@@ -93,7 +103,7 @@ node_modules/**
 2. Parse `.prodinclude` → include patterns + `!` negation patterns
 3. Prepend hardcoded safety negations
 4. Walk dev tree, match includes minus negations → plan copies
-5. Skip unchanged files (size/mtime comparison)
+5. Skip unchanged files (size/mtime comparison by default; `--force` flag to copy all regardless)
 6. If `--mirror`: walk prod, plan deletions for files not in planned set
 7. If `--dry-run`: print plan, exit
 8. Execute: mkdirs → copies → deletes
@@ -103,17 +113,24 @@ node_modules/**
 ### prod2dev Flow
 
 1. Validate markers
-2. Walk prod tree, copy all to dev (skip unchanged)
-3. Resolve full allowlisted set from `.prodinclude` in dev
-4. Files in dev's allowlisted set missing from prod → write to `.prod_deletes`
-5. Print summary, note delete candidates if any
+2. Walk prod tree, **excluding hardcoded safety negations** (e.g. `.prodroot` is never copied to dev)
+3. Copy to dev (skip unchanged)
+4. Resolve full allowlisted set from `.prodinclude` in dev
+5. Files in dev's allowlisted set missing from prod → write to `.prod_deletes`
+6. Print summary, note delete candidates if any
 
 ### prune Flow
 
 1. Read delete list (one path per line, `#` comments, blank lines ignored)
-2. Delete listed files from dev
-3. Remove empty parent dirs
-4. Print summary
+2. Normalize each path (`/` separators, no `..`, no absolute paths)
+3. **Safety checks**: resolve each path against `--dev` root and reject any entry that:
+   - Contains `..` components (path traversal)
+   - Is an absolute path
+   - Resolves outside the `--dev` directory (symlink escape)
+4. Skip entries where the file no longer exists (log warning, continue)
+5. Delete validated files from dev
+6. Remove empty parent dirs (only within `--dev`)
+7. Print summary (deleted count, skipped count, rejected count)
 
 ### Dependencies
 
@@ -148,5 +165,7 @@ Verbose lists every action. Dry run prefixes with `WOULD`.
 - Direction guards prevent wrong-way sync with clear error messages
 - Hardcoded safety negations cannot be overridden by `.prodinclude`
 - `--dry-run` produces accurate plan without writing anything
-- Unchanged files are skipped (size/mtime check)
+- Unchanged files are skipped (size/mtime check); `--force` overrides for full resync
+- Path normalization is consistent cross-platform (forward-slash, no traversal)
+- `prune` rejects path traversal, symlink escapes, and absolute paths
 - Replaces `sync_to_prod.bat` for the oceanwave project when paired with a `.prodinclude`

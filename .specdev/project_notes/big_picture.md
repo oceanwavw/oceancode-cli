@@ -7,11 +7,14 @@ Utility scripts repository for the oceanwave project. Contains build scripts, gi
 Developers on the team.
 
 ## Tech Stack
-- Shell scripts (bash/bat)
-- Python, Go, Node.js (used across the broader oceanwave project)
+- Shell scripts (bash/bat) for git automation and build helpers
+- Node.js for structured CLI tools (sync_repo.js — uses micromatch, fs-extra)
 
 ## Architecture
-Simple flat folder structure with standalone utility scripts.
+- Standalone shell scripts at the root for simple automation (git, build, install)
+- `sync_repo.js` is a structured Node.js CLI with `lib/`, `test/`, and npm dependencies
+- Dev/prod sync workflow: `.prodinclude` allowlist in dev repos, bidirectional sync via `dev2prod`, `prod2dev`, `prune` commands
 
 ## Conventions & Constraints
 - Keep scripts simple and modular.
+- Node.js tools use TDD with `node:test`, no external test framework.

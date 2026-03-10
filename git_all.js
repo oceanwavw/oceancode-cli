@@ -5,10 +5,10 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-const COMMANDS = ['status', 'commit', 'push', 'pull', 'fetch', 'remote-add'];
+const COMMANDS = ['status', 'commit', 'push', 'pull', 'fetch', 'remote-add', 'init'];
 
 function usage() {
-  console.error('Usage: git_all.js <command> [args] [--list <file>] [--config <file>]');
+  console.error('Usage: git_all.js <command> [args] --dev|--prod [--list <file>] [--config <file>]');
   console.error('');
   console.error('Commands:');
   console.error('  status                     Show git status for all repos');
@@ -17,6 +17,11 @@ function usage() {
   console.error('  pull <remote>              Pull main from remote');
   console.error('  fetch <remote>             Fetch from remote');
   console.error('  remote-add <name> <url>    Add remote to all repos');
+  console.error('  init                       Git init + initial commit');
+  console.error('');
+  console.error('Required:');
+  console.error('  --dev            Operate on dev (source) repos');
+  console.error('  --prod           Operate on prod (target) repos');
   console.error('');
   console.error('Options:');
   console.error('  --list <file>    Only process repos listed in file');
@@ -32,9 +37,15 @@ function parseArgs(argv) {
   const flags = { positional: [] };
   for (let i = 1; i < args.length; i++) {
     const arg = args[i];
+    if (arg === '--dev') { flags.env = 'dev'; continue; }
+    if (arg === '--prod') { flags.env = 'prod'; continue; }
     if (arg === '--list' && args[i + 1]) { flags.list = path.resolve(args[++i]); continue; }
     if (arg === '--config' && args[i + 1]) { flags.config = path.resolve(args[++i]); continue; }
     flags.positional.push(arg);
+  }
+  if (!flags.env) {
+    console.error('ERROR: must specify --dev or --prod\n');
+    usage();
   }
   return { command, flags };
 }
@@ -42,7 +53,7 @@ function parseArgs(argv) {
 function loadRepos(flags) {
   const configPath = flags.config || path.join(__dirname, 'sync_repos.json');
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  const source = path.resolve(config.source);
+  const base = path.resolve(flags.env === 'prod' ? config.target : config.source);
 
   let repoNames = Object.keys(config.repos);
   if (flags.list) {
@@ -58,7 +69,7 @@ function loadRepos(flags) {
 
   return repoNames.map(name => ({
     name,
-    dir: path.join(source, config.repos[name].path),
+    dir: path.join(base, config.repos[name].path),
   }));
 }
 
@@ -70,15 +81,25 @@ function run() {
   const { command, flags } = parseArgs(process.argv);
   const repos = loadRepos(flags);
 
+  const mode = flags.env === 'prod' ? 'prod' : 'dev';
+  console.log(`Mode: ${mode}\n`);
+
   let passed = 0;
   let failed = 0;
   let skipped = 0;
 
   for (let i = 0; i < repos.length; i++) {
     const { name, dir } = repos[i];
-    const gitDir = path.join(dir, '.git');
 
-    if (!fs.existsSync(gitDir)) {
+    if (!fs.existsSync(dir)) {
+      console.log(`[${i + 1}/${repos.length}] ${name} — directory not found, skipping`);
+      skipped++;
+      continue;
+    }
+
+    const hasGit = fs.existsSync(path.join(dir, '.git'));
+
+    if (command !== 'init' && !hasGit) {
       console.log(`[${i + 1}/${repos.length}] ${name} — not a git repo, skipping`);
       skipped++;
       continue;
@@ -88,6 +109,20 @@ function run() {
 
     try {
       switch (command) {
+        case 'init': {
+          if (hasGit) {
+            console.log('  already a git repo, skipping');
+            skipped++;
+            break;
+          }
+          git(dir, 'init -b main');
+          git(dir, 'add -A');
+          git(dir, 'commit -m "initial commit"');
+          console.log('  initialized + initial commit');
+          passed++;
+          break;
+        }
+
         case 'status': {
           try { git(dir, 'checkout main'); } catch {}
           const out = git(dir, 'status --short');
@@ -172,7 +207,7 @@ function run() {
             failed++;
             break;
           }
-          const url = `${baseUrl.replace(/\/$/, '')}/${path.basename(dir)}.git`;
+          const url = `${baseUrl.replace(/\/$/, '')}/${name}.git`;
           try {
             git(dir, `remote get-url ${remoteName}`);
             console.log(`  remote '${remoteName}' already exists, skipping`);
