@@ -48,6 +48,12 @@ describe('validateDev2Prod', () => {
     await fs.writeFile(path.join(prodDir, '.prodinclude'), 'src/**');
     await assert.rejects(() => validateDev2Prod(devDir, prodDir), /dev folder/);
   });
+
+  test('fails when prod is non-empty and has no .prodroot', async () => {
+    await fs.writeFile(path.join(devDir, '.prodinclude'), 'src/**');
+    await fs.outputFile(path.join(prodDir, 'some_file.txt'), 'data');
+    await assert.rejects(() => validateDev2Prod(devDir, prodDir), /not empty/);
+  });
 });
 
 describe('validateProd2Dev', () => {
