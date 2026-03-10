@@ -67,14 +67,16 @@ async function run(args) {
   const { action, flags } = parseArgs(args);
   const config = loadConfig(flags.config);
 
+  // Determine how many positional args the action consumes
+  const EXPECTED_POSITIONALS = {
+    status: 0, init: 0, commit: 1, push: 1, pull: 1, fetch: 1, 'remote-add': 2,
+  };
+  const expected = EXPECTED_POSITIONALS[action];
+
   // First positional may be a repo filter (single name or comma-delimited)
   let repoArg = null;
-  if (flags.positional.length > 0) {
-    const candidate = flags.positional[0];
-    const names = candidate.split(',').map(n => n.trim());
-    if (names.every(n => config.repos[n])) {
-      repoArg = flags.positional.shift();
-    }
+  if (flags.positional.length > expected) {
+    repoArg = flags.positional.shift();
   }
 
   const repos = resolveRepos(config, repoArg);
