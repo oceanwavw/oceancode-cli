@@ -1,0 +1,26 @@
+# Repos to sync (one per line, # for comments)
+oceanseed_app
+oceanfarm_app
+oceanhub_app
+oceandata_app
+oceanlive_app
+oceanwave_dash
+oceanreact
+oceandata_gui
+oceanpyqt
+oceanapp
+oceandata_tau
+jsonldb
+oceancap
+oceandata
+oceanfarm
+oceanquant
+oceanseed
+oceanutil
+oceanshed
+dataportal
+oceandata-cli
+oceanlab-cli
+data_configs
+signal_samples
+scripts

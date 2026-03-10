@@ -1,0 +1,5 @@
+# scripts production allowlist
+**
+!configs/hub_config.toml
+!sync_to_prod.bat
+!sync_to_prod.sh
