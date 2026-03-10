@@ -49,6 +49,12 @@ describe('validateDev2Prod', () => {
     await assert.rejects(() => validateDev2Prod(devDir, prodDir), /dev folder/);
   });
 
+  test('passes when prod path does not exist yet (new)', async () => {
+    await fs.writeFile(path.join(devDir, '.prodinclude'), 'src/**');
+    const newProdDir = path.join(os.tmpdir(), 'nonexistent-prod-' + Date.now());
+    await assert.doesNotReject(() => validateDev2Prod(devDir, newProdDir));
+  });
+
   test('fails when prod is non-empty and has no .prodroot', async () => {
     await fs.writeFile(path.join(devDir, '.prodinclude'), 'src/**');
     await fs.outputFile(path.join(prodDir, 'some_file.txt'), 'data');
