@@ -3,12 +3,12 @@
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
-const { loadConfig, resolveRepos } = require('../lib/config');
+const { loadConfig, requireSection, resolveRepos } = require('../lib/configLoader');
 
 function usage() {
-  console.error('Usage: oceancode install <base-url> [--config <f>]');
+  console.error('Usage: oceancode clone-prod <base-url> [--config <f>]');
   console.error('');
-  console.error('Clones all repos from a git server.');
+  console.error('Clones all repos into the prod directory.');
   process.exit(1);
 }
 
@@ -18,18 +18,43 @@ function parseArgs(args) {
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--config' && args[i + 1]) { flags.config = path.resolve(args[++i]); continue; }
+    if (a === '--help' || a === '-h') usage();
     if (!baseUrl && !a.startsWith('-')) { baseUrl = a; continue; }
-    usage();
   }
-  if (!baseUrl) usage();
-  return { baseUrl: baseUrl.replace(/\/$/, ''), flags };
+  if (baseUrl) baseUrl = baseUrl.replace(/\/$/, '');
+  return { baseUrl, flags };
 }
 
 async function run(args) {
-  const { baseUrl, flags } = parseArgs(args);
+  let { baseUrl, flags } = parseArgs(args);
+  const originalHadBaseUrl = !!baseUrl;
+
+  if (!baseUrl && process.stdin.isTTY) {
+    const { text, isCancel } = require('@clack/prompts');
+    const urlResult = await text({ message: 'Git server base URL:' });
+    if (isCancel(urlResult)) process.exit(0);
+    baseUrl = urlResult.replace(/\/$/, '');
+  }
+
+  if (!baseUrl) usage();
+
   const config = loadConfig(flags.config);
-  const repos = resolveRepos(config, null);
-  const rootDir = process.cwd();
+  requireSection(config, 'workspace.prod_root');
+  requireSection(config, 'repos');
+  let repos = resolveRepos(config, null);
+
+  if (process.stdin.isTTY && !originalHadBaseUrl) {
+    const { multiselect, isCancel } = require('@clack/prompts');
+    const selected = await multiselect({
+      message: 'Select repos to clone:',
+      options: repos.map(r => ({ value: r.name, label: r.name, hint: r.path })),
+      initialValues: repos.map(r => r.name),
+    });
+    if (isCancel(selected)) process.exit(0);
+    repos = repos.filter(r => selected.includes(r.name));
+  }
+
+  const rootDir = path.resolve(config.workspace.prod_root);
 
   const dirs = new Set();
   for (const repo of repos) {
@@ -68,4 +93,4 @@ async function run(args) {
   process.exit(failed > 0 ? 1 : 0);
 }
 
-module.exports = { run };
+module.exports = { run, parseArgs };
