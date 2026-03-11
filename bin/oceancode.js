@@ -87,6 +87,23 @@ CONFIG
   Dev root is always the current working directory.
   Prod root is set in config under workspace.prod_root.
 
+.PRODINCLUDE
+  Each dev repo needs a .prodinclude file to use \`oceancode sync\`.
+  It defines which files get synced to prod using glob patterns.
+
+  Create it at the root of each repo:
+
+    # Example .prodinclude
+    src/**                  # include all source files
+    package.json            # include specific files
+    *.py                    # wildcards work
+    !**/tests/**            # exclude with ! prefix
+    !**/*.spec              # exclude test specs
+
+  Built-in safety: .git, node_modules, __pycache__, dist, venv-*,
+  .env, and IDE folders are always excluded regardless of patterns.
+  See source for full list: src/lib/shared.js SAFETY_NEGATIONS.
+
 GLOBAL FLAGS
   --help, -h    Show help (per-command or global)
   --config <f>  Path to oceancode.yaml (default: ./oceancode.yaml)
