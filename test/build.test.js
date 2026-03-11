@@ -1,28 +1,20 @@
+// test/build.test.js
 'use strict';
-
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
 describe('build command', () => {
-  it('parseArgs defaults to all target', () => {
+  it('parseArgs defaults to all modules', () => {
     const { parseArgs } = require('../src/commands/build');
     const result = parseArgs([]);
-    assert.equal(result.target, 'all');
-    assert.equal(result.pkg, null);
+    assert.equal(result.module, null);
+    assert.equal(result.flags.skipPreflight, false);
   });
 
-  it('parseArgs parses target and package', () => {
+  it('parseArgs parses module name', () => {
     const { parseArgs } = require('../src/commands/build');
-    const result = parseArgs(['backends', 'oceanquant']);
-    assert.equal(result.target, 'backends');
-    assert.equal(result.pkg, 'oceanquant');
-  });
-
-  it('parseArgs parses --config flag', () => {
-    const { parseArgs } = require('../src/commands/build');
-    const result = parseArgs(['frontends', '--config', '/tmp/oceancode.yaml']);
-    assert.equal(result.target, 'frontends');
-    assert.ok(result.flags.config);
+    const result = parseArgs(['dataportal']);
+    assert.equal(result.module, 'dataportal');
   });
 
   it('parseArgs parses --skip-preflight flag', () => {
@@ -31,8 +23,14 @@ describe('build command', () => {
     assert.equal(result.flags.skipPreflight, true);
   });
 
-  it('parseArgs rejects unknown target', () => {
+  it('parseArgs parses --config flag', () => {
     const { parseArgs } = require('../src/commands/build');
-    assert.throws(() => parseArgs(['unknown']), /Unknown build target/);
+    const result = parseArgs(['--config', '/tmp/test.yaml']);
+    assert.equal(result.flags.config, '/tmp/test.yaml');
+  });
+
+  it('run function is exported', () => {
+    const mod = require('../src/commands/build');
+    assert.equal(typeof mod.run, 'function');
   });
 });
