@@ -12,19 +12,17 @@ function usage() {
   console.error('Apps:   (defined in oceancode.yaml launchers section)');
   console.error('');
   console.error('Flags:');
-  console.error('  --prod           Run compiled/packaged version');
   console.error('  --config <path>  Config file (default: oceancode.yaml)');
   process.exit(1);
 }
 
 function parseArgs(args) {
   let app = null;
-  const flags = { prod: false };
+  const flags = {};
 
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--config' && args[i + 1]) { flags.config = path.resolve(args[++i]); continue; }
-    if (a === '--prod') { flags.prod = true; continue; }
     if (a === '--help' || a === '-h') usage();
     if (!a.startsWith('-') && !app) { app = a; continue; }
   }
@@ -62,25 +60,6 @@ async function run(args) {
 
   const platform = getPlatformKey();
 
-  if (flags.prod) {
-    // Prod mode: run binary
-    const binaryMap = launcherCfg.prod && launcherCfg.prod.binary;
-    if (!binaryMap || !binaryMap[platform]) {
-      console.error(`No prod binary configured for ${app} on ${platform}`);
-      process.exit(1);
-    }
-    const binaryPath = path.join(workspaceRoot, binaryMap[platform]);
-    if (!fs.existsSync(binaryPath)) {
-      console.error(`ERROR: ${binaryPath} not found — run "oceancode build" first`);
-      process.exit(1);
-    }
-    console.log(`Launching ${app} (prod)...`);
-    const child = spawn(binaryPath, [], { stdio: 'inherit', cwd: path.dirname(binaryPath) });
-    child.on('exit', code => process.exit(code || 0));
-    return;
-  }
-
-  // Dev mode
   const dev = launcherCfg.dev;
   if (!dev) {
     console.error(`No dev configuration for ${app}`);

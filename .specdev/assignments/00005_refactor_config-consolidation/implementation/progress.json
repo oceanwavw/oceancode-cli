@@ -38,18 +38,23 @@
     {
       "number": 6,
       "name": ".gitignore seeding in git-prod init",
-      "status": "in_progress",
-      "started_at": "2026-03-11T04:27:03Z"
+      "status": "completed",
+      "started_at": "2026-03-11T04:27:03Z",
+      "completed_at": "2026-03-11T04:29:17Z"
     },
     {
       "number": 7,
       "name": "Update init wizard to generate single oceancode.yaml",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-03-11T04:29:32Z",
+      "completed_at": "2026-03-11T04:31:58Z"
     },
     {
       "number": 8,
       "name": "Cleanup — remove old loaders, tests, update dispatcher",
-      "status": "pending"
+      "status": "completed",
+      "started_at": "2026-03-11T04:29:32Z",
+      "completed_at": "2026-03-11T04:34:01Z"
     }
   ]
 }

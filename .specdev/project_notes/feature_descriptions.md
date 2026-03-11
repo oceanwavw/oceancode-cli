@@ -30,6 +30,12 @@ Running catalog of completed assignments. See `.specdev/_guides/task/validation_
 - **Description:** Interactive config wizard (`oceancode init`) using `@clack/prompts` to generate `sync_repos.yaml` and `build.yaml` from hardcoded defaults with multi-select, preview, and confirm steps. Added interactive prompts to all 6 commands (init, install, git, build, sync, launch) with TTY guard and prompt-skip when args provided.
 - **Key files:** `src/commands/init.js`, `src/lib/defaults.js`, `src/lib/configGen.js`, `src/commands/install.js`, `src/commands/git.js`, `src/commands/build.js`, `src/commands/sync.js`, `src/commands/launch.js`
 
+### Config Consolidation & Command Renames
+- **Assignment:** 00005_refactor_config-consolidation
+- **Completed:** 2026-03-11
+- **Description:** Consolidated `sync_repos.yaml` + `build.yaml` into single `oceancode.yaml`. Renamed `install` → `clone-prod`, split `git` → `git-dev` (status only) + `git-prod` (full ops). Unified config loader (`configLoader.js`) replaces two separate loaders. Dev root enforced as cwd, prod root from config. Repo path validation rejects absolute paths. `.gitignore` seeding on `git-prod init`.
+- **Key files:** `src/lib/configLoader.js`, `src/commands/clone-prod.js`, `src/commands/git-dev.js`, `src/commands/git-prod.js`, `src/commands/init.js`, `src/lib/configGen.js`, `bin/oceancode.js`
+
 ---
 
 ## Architecture & Structure

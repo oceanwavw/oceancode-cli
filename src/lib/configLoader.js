@@ -34,6 +34,12 @@ function resolveRepos(config, repoArg) {
   if (!config.repos) {
     throw new Error(`Missing config section 'repos'. Run 'oceancode init' to generate oceancode.yaml.`);
   }
+  // Validate all repo paths are relative (not absolute)
+  for (const [name, repoPath] of Object.entries(config.repos)) {
+    if (path.isAbsolute(repoPath)) {
+      throw new Error(`Repo '${name}' has absolute path '${repoPath}'. Repo paths must be relative to workspace root.`);
+    }
+  }
   if (!repoArg) {
     return Object.entries(config.repos).map(([name, rel]) => ({ name, path: rel }));
   }

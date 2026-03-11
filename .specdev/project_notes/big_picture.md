@@ -16,19 +16,23 @@ Developers on the team. CLI is installed globally via `npm link` from the `scrip
 ### CLI Structure
 - `bin/oceancode.js` — entry point/dispatcher, routes to command modules by first arg
 - `src/commands/sync.js` — dev2prod, prod2dev, prune (wraps lib functions)
-- `src/commands/git.js` — status, commit, push, pull, fetch, remote-add, init
-- `src/commands/install.js` — clone repos from a git server base URL
+- `src/commands/git-dev.js` — status only across dev repos
+- `src/commands/git-prod.js` — full git ops (status, commit, push, pull, fetch, remote-add, init) with `.prodroot` guard and `.gitignore` seeding
+- `src/commands/clone-prod.js` — clone repos from a git server base URL into prod root
 - `src/commands/build.js` — cross-platform build dispatcher (backends, frontends, cli targets with granular package targeting)
 - `src/commands/launch.js` — app launcher with dev (venv/npm) and prod (binary) modes
-- `src/commands/init.js` — interactive wizard to generate `sync_repos.yaml` and `build.yaml` configs
-- `src/lib/` — shared internals (config, dev2prod, prod2dev, prune, guards, shared, walker)
+- `src/commands/init.js` — interactive wizard to generate `oceancode.yaml`
+- `src/lib/configLoader.js` — unified config loader (`loadConfig`, `requireSection`, `resolveRepos`) with path validation
+- `src/lib/` — shared internals (dev2prod, prod2dev, prune, guards, shared, walker)
 - `src/lib/defaults.js` — hardcoded registry of repos, build targets, launchers, tool install info
 - `src/lib/configGen.js` — config generation functions with atomic writes
-- `src/lib/build/` — build system modules (platform, buildConfig, preflight, backends, frontends, cli)
+- `src/lib/build/` — build system modules (platform, preflight, backends, frontends, cli)
 
 ### Config
-- `sync_repos.yaml` at workspace root — repo map only (name → relative path)
-- `build.yaml` at workspace root — build targets, venv configs, tool install info, launcher definitions
+- Single `oceancode.yaml` at workspace root with sections: `workspace` (prod_root), `repos` (name→relative path), `build` (targets, venv, tools), `launchers`
+- Dev root = cwd (enforced — no `dev_root` in config), prod root = `config.workspace.prod_root`
+- Partial config supported: commands only require their relevant sections (e.g., `sync` needs `workspace.prod_root` + `repos`, `build` needs `build`)
+- Repo paths must be relative to workspace root (absolute paths rejected by `resolveRepos`)
 - No machine-specific paths in config; platform detection at runtime via `process.platform`
 
 ### Key Concepts

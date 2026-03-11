@@ -94,4 +94,10 @@ describe('configLoader', () => {
     const config = { repos: { oceanfarm: 'lib/oceanfarm' } };
     assert.throws(() => resolveRepos(config, 'nonexistent'), /Unknown repos/);
   });
+
+  it('resolveRepos rejects absolute repo paths', () => {
+    const { resolveRepos } = require('../src/lib/configLoader');
+    const config = { repos: { bad: '/absolute/path' } };
+    assert.throws(() => resolveRepos(config, null), /absolute path/);
+  });
 });
