@@ -58,33 +58,61 @@ async function run(args) {
   });
   if (isCancel(selectedRepos)) { outro('Cancelled.'); process.exit(0); }
 
-  const venvTargets = await multiselect({
-    message: 'Python venv targets:',
-    options: defaults.pythonVenvTargets.map(t => ({ value: t, label: t.name, hint: t.path })),
-    initialValues: defaults.pythonVenvTargets,
-  });
-  if (isCancel(venvTargets)) { outro('Cancelled.'); process.exit(0); }
+  // Filter build targets and launchers based on selected repos
+  const selectedPaths = new Set(selectedRepos.map(r => r.path));
+  const selectedNames = new Set(selectedRepos.map(r => r.name));
+  const isRepoSelected = (t) =>
+    selectedNames.has(t.name) || selectedPaths.has(t.path) ||
+    [...selectedPaths].some(p => t.path.startsWith(p + '/'));
 
-  const frontendTargets = await multiselect({
-    message: 'Frontend (npm) build targets:',
-    options: defaults.frontendTargets.map(t => ({ value: t, label: t.name, hint: t.path })),
-    initialValues: defaults.frontendTargets,
-  });
-  if (isCancel(frontendTargets)) { outro('Cancelled.'); process.exit(0); }
+  const availableVenv = defaults.pythonVenvTargets.filter(isRepoSelected);
+  const availableFrontend = defaults.frontendTargets.filter(isRepoSelected);
+  const availableGo = defaults.goTargets.filter(isRepoSelected);
+  const availableLaunchers = defaults.launchers.filter(l => selectedNames.has(l.name));
 
-  const goTargets = await multiselect({
-    message: 'Go build targets:',
-    options: defaults.goTargets.map(t => ({ value: t, label: t.name, hint: t.path })),
-    initialValues: defaults.goTargets,
-  });
-  if (isCancel(goTargets)) { outro('Cancelled.'); process.exit(0); }
+  let venvTargets = [];
+  if (availableVenv.length > 0) {
+    venvTargets = await multiselect({
+      message: 'Python venv targets:',
+      options: availableVenv.map(t => ({ value: t, label: t.name, hint: t.path })),
+      initialValues: availableVenv,
+      required: false,
+    });
+    if (isCancel(venvTargets)) { outro('Cancelled.'); process.exit(0); }
+  }
 
-  const launcherSelection = await multiselect({
-    message: 'Launchers:',
-    options: defaults.launchers.map(l => ({ value: l, label: l.label, hint: l.name })),
-    initialValues: defaults.launchers,
-  });
-  if (isCancel(launcherSelection)) { outro('Cancelled.'); process.exit(0); }
+  let frontendTargets = [];
+  if (availableFrontend.length > 0) {
+    frontendTargets = await multiselect({
+      message: 'Frontend (npm) build targets:',
+      options: availableFrontend.map(t => ({ value: t, label: t.name, hint: t.path })),
+      initialValues: availableFrontend,
+      required: false,
+    });
+    if (isCancel(frontendTargets)) { outro('Cancelled.'); process.exit(0); }
+  }
+
+  let goTargets = [];
+  if (availableGo.length > 0) {
+    goTargets = await multiselect({
+      message: 'Go build targets:',
+      options: availableGo.map(t => ({ value: t, label: t.name, hint: t.path })),
+      initialValues: availableGo,
+      required: false,
+    });
+    if (isCancel(goTargets)) { outro('Cancelled.'); process.exit(0); }
+  }
+
+  let launcherSelection = [];
+  if (availableLaunchers.length > 0) {
+    launcherSelection = await multiselect({
+      message: 'Launchers:',
+      options: availableLaunchers.map(l => ({ value: l, label: l.label, hint: l.name })),
+      initialValues: availableLaunchers,
+      required: false,
+    });
+    if (isCancel(launcherSelection)) { outro('Cancelled.'); process.exit(0); }
+  }
 
   const pythonVersion = await text({
     message: 'Python version:',
