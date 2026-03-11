@@ -3,17 +3,17 @@
 const path = require('path');
 const fs = require('fs');
 const { spawn } = require('child_process');
-const { loadBuildConfig } = require('../lib/build/buildConfig');
+const { loadConfig, requireSection } = require('../lib/configLoader');
 const { getPlatformKey, getVenvBin } = require('../lib/build/platform');
 
 function usage() {
   console.error('Usage: oceancode launch <app> [flags]');
   console.error('');
-  console.error('Apps:   (defined in build.yaml launchers section)');
+  console.error('Apps:   (defined in oceancode.yaml launchers section)');
   console.error('');
   console.error('Flags:');
   console.error('  --prod           Run compiled/packaged version');
-  console.error('  --config <path>  Config file (default: ../build.yaml)');
+  console.error('  --config <path>  Config file (default: oceancode.yaml)');
   process.exit(1);
 }
 
@@ -34,12 +34,23 @@ function parseArgs(args) {
 }
 
 async function run(args) {
+  if (args.length === 0 && process.stdin.isTTY) {
+    const { select, isCancel } = require('@clack/prompts');
+    const defaults = require('../lib/defaults');
+    const app = await select({
+      message: 'Launch app:',
+      options: defaults.launchers.map(l => ({ value: l.name, label: l.label })),
+    });
+    if (isCancel(app)) process.exit(0);
+    args = [app];
+  }
+
   const { app, flags } = parseArgs(args);
 
-  const scriptsDir = path.resolve(__dirname, '..', '..');
-  const workspaceRoot = path.resolve(scriptsDir, '..');
-  const configPath = flags.config || path.join(workspaceRoot, 'build.yaml');
-  const config = loadBuildConfig(configPath);
+  const workspaceRoot = process.cwd();
+  const configPath = flags.config || path.join(workspaceRoot, 'oceancode.yaml');
+  const config = loadConfig(configPath);
+  requireSection(config, 'launchers');
 
   const launchers = config.launchers || {};
   const launcherCfg = launchers[app];
@@ -79,7 +90,7 @@ async function run(args) {
   if (dev.venv_path && dev.entry) {
     // Python app: use venv python binary directly
     // Find matching venv config by path (keys are package names, not app names)
-    const venvEntries = Object.values(config.venv || {});
+    const venvEntries = Object.values((config.build && config.build.venv) || config.venv || {});
     const venvConfig = venvEntries.find(v => v.path === dev.venv_path);
     let venvDir;
     if (venvConfig) {

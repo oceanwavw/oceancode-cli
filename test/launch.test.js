@@ -20,7 +20,7 @@ describe('launch command', () => {
 
   it('parseArgs parses --config flag', () => {
     const { parseArgs } = require('../src/commands/launch');
-    const result = parseArgs(['oceanwave', '--config', '/tmp/build.yaml']);
+    const result = parseArgs(['oceanwave', '--config', '/tmp/oceancode.yaml']);
     assert.equal(result.app, 'oceanwave');
     assert.ok(result.flags.config);
   });

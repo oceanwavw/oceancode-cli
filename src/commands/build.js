@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('path');
-const { loadBuildConfig } = require('../lib/build/buildConfig');
+const { loadConfig, requireSection } = require('../lib/configLoader');
 const { runPreflight } = require('../lib/build/preflight');
 const { buildBackends } = require('../lib/build/backends');
 const { buildFrontends } = require('../lib/build/frontends');
@@ -19,7 +19,7 @@ function usage() {
   console.error('  cli          CLI tool binaries');
   console.error('');
   console.error('Flags:');
-  console.error('  --config <path>    Config file (default: ../build.yaml)');
+  console.error('  --config <path>    Config file (default: oceancode.yaml)');
   console.error('  --skip-preflight   Skip tool checks');
   process.exit(1);
 }
@@ -45,13 +45,48 @@ function parseArgs(args) {
 }
 
 async function run(args) {
+  if (args.length === 0 && process.stdin.isTTY) {
+    const { select, multiselect, isCancel } = require('@clack/prompts');
+    const defaults = require('../lib/defaults');
+    const target = await select({
+      message: 'Build target:',
+      options: [
+        { value: 'all', label: 'all — Build everything' },
+        { value: 'backends', label: 'backends — Python backend packages' },
+        { value: 'frontends', label: 'frontends — Node.js frontend apps' },
+        { value: 'cli', label: 'cli — CLI tool binaries' },
+      ],
+    });
+    if (isCancel(target)) process.exit(0);
+    args = [target];
+
+    // Follow-up package picker for specific targets
+    const targetPackages = {
+      backends: defaults.pythonVenvTargets,
+      frontends: defaults.frontendTargets,
+      cli: defaults.goTargets,
+    };
+    const packages = targetPackages[target];
+    if (packages && packages.length > 0) {
+      const selected = await multiselect({
+        message: `Select ${target} packages:`,
+        options: packages.map(p => ({ value: p.name, label: p.name, hint: p.path })),
+        initialValues: packages.map(p => p.name),
+      });
+      if (isCancel(selected)) process.exit(0);
+      if (selected.length === 1) {
+        args.push(selected[0]);
+      }
+    }
+  }
+
   const { target, pkg, flags } = parseArgs(args);
 
   // Resolve config path
-  const scriptsDir = path.resolve(__dirname, '..', '..');
-  const workspaceRoot = path.resolve(scriptsDir, '..');
-  const configPath = flags.config || path.join(workspaceRoot, 'build.yaml');
-  const config = loadBuildConfig(configPath);
+  const workspaceRoot = process.cwd();
+  const configPath = flags.config || path.join(workspaceRoot, 'oceancode.yaml');
+  const config = loadConfig(configPath);
+  requireSection(config, 'build');
 
   // Determine which targets to build
   const buildTargets = target === 'all' ? ['backends', 'frontends', 'cli'] : [target];
@@ -59,7 +94,7 @@ async function run(args) {
   // Preflight
   if (!flags.skipPreflight) {
     console.log('Pre-flight checks...');
-    const ok = await runPreflight(config, buildTargets);
+    const ok = await runPreflight(config.build, buildTargets);
     if (!ok) {
       console.error('Pre-flight checks failed');
       process.exit(1);
@@ -75,19 +110,19 @@ async function run(args) {
           console.log('========================================');
           console.log(' Building Python Backend');
           console.log('========================================');
-          await buildBackends(config, workspaceRoot, pkg);
+          await buildBackends(config.build, workspaceRoot, pkg);
           break;
         case 'frontends':
           console.log('========================================');
           console.log(' Building Node.js Frontends');
           console.log('========================================');
-          await buildFrontends(config, workspaceRoot, pkg);
+          await buildFrontends(config.build, workspaceRoot, pkg);
           break;
         case 'cli':
           console.log('========================================');
           console.log(' Building CLI Tools');
           console.log('========================================');
-          await buildCli(config, workspaceRoot, pkg);
+          await buildCli(config.build, workspaceRoot, pkg);
           break;
       }
     }

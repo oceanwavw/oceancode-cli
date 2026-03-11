@@ -20,7 +20,7 @@ describe('build command', () => {
 
   it('parseArgs parses --config flag', () => {
     const { parseArgs } = require('../src/commands/build');
-    const result = parseArgs(['frontends', '--config', '/tmp/build.yaml']);
+    const result = parseArgs(['frontends', '--config', '/tmp/oceancode.yaml']);
     assert.equal(result.target, 'frontends');
     assert.ok(result.flags.config);
   });
