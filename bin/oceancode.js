@@ -15,16 +15,16 @@ const GROUPS = {
 
 const group = process.argv[2];
 if (!group || !GROUPS[group]) {
-  console.error('Usage: oceancode <sync|git-dev|git-prod|clone-prod|build|launch|init> [action] [args] [flags]');
+  console.error('Usage: oceancode <init|clone-prod|sync|git-dev|git-prod|build|launch> [action] [args] [flags]');
   console.error('');
   console.error('Command groups:');
-  console.error('  sync       Sync repos between dev and prod');
-  console.error('  git-dev    Git status for dev repos');
-  console.error('  git-prod   Git operations across prod repos');
-  console.error('  clone-prod Clone repos into prod directory');
-  console.error('  build      Build backend, frontend, and CLI packages');
-  console.error('  launch     Launch applications (dev or prod mode)');
-  console.error('  init       Interactive wizard to generate config files');
+  console.error('  init        Interactive wizard to generate oceancode.yaml');
+  console.error('  clone-prod  Clone repos into prod directory');
+  console.error('  sync        Sync repos between dev and prod');
+  console.error('  git-dev     Git status across dev repos');
+  console.error('  git-prod    Git operations across prod repos');
+  console.error('  build       Build backend, frontend, and CLI packages');
+  console.error('  launch      Launch applications');
   process.exit(1);
 }
 
