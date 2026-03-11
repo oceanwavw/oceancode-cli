@@ -43,4 +43,38 @@ describe('git-prod command', () => {
     assert.equal(isReadOnly('commit'), false);
     assert.equal(isReadOnly('push'), false);
   });
+
+  it('seedGitignore creates .gitignore with default entries', () => {
+    const { seedGitignore } = require('../src/commands/git-prod');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-gi-'));
+    seedGitignore(tmpDir);
+    const content = fs.readFileSync(path.join(tmpDir, '.gitignore'), 'utf8');
+    assert.ok(content.includes('bin/'));
+    assert.ok(content.includes('node_modules/'));
+    assert.ok(content.includes('venv-*/'));
+  });
+
+  it('seedGitignore appends missing entries to existing .gitignore', () => {
+    const { seedGitignore } = require('../src/commands/git-prod');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-gi-'));
+    fs.writeFileSync(path.join(tmpDir, '.gitignore'), 'bin/\ncustom-pattern\n');
+    seedGitignore(tmpDir);
+    const content = fs.readFileSync(path.join(tmpDir, '.gitignore'), 'utf8');
+    assert.ok(content.includes('custom-pattern'));
+    assert.ok(content.includes('bin/'));
+    assert.ok(content.includes('node_modules/'));
+    // bin/ should appear only once
+    const binCount = content.split('\n').filter(l => l.trim() === 'bin/').length;
+    assert.equal(binCount, 1);
+  });
+
+  it('seedGitignore is idempotent', () => {
+    const { seedGitignore } = require('../src/commands/git-prod');
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-gi-'));
+    seedGitignore(tmpDir);
+    const first = fs.readFileSync(path.join(tmpDir, '.gitignore'), 'utf8');
+    seedGitignore(tmpDir);
+    const second = fs.readFileSync(path.join(tmpDir, '.gitignore'), 'utf8');
+    assert.equal(first, second);
+  });
 });

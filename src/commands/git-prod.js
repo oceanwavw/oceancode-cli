@@ -6,6 +6,27 @@ const { execSync } = require('child_process');
 const { loadConfig, requireSection, resolveRepos } = require('../lib/configLoader');
 
 const ACTIONS = ['status', 'commit', 'push', 'pull', 'fetch', 'remote-add', 'init'];
+
+const DEFAULT_GITIGNORE = [
+  'bin/', '*.exe', '*.pyc', '__pycache__/', 'node_modules/',
+  'dist/', 'venv-*/', '*.egg-info/', '.DS_Store',
+];
+
+function seedGitignore(dir) {
+  const gitignorePath = path.join(dir, '.gitignore');
+  let existing = [];
+  if (fs.existsSync(gitignorePath)) {
+    existing = fs.readFileSync(gitignorePath, 'utf8').split('\n');
+  }
+  const existingSet = new Set(existing.map(l => l.trim()));
+  const toAdd = DEFAULT_GITIGNORE.filter(entry => !existingSet.has(entry));
+  if (toAdd.length > 0) {
+    const content = existing.length > 0
+      ? existing.join('\n') + '\n' + toAdd.join('\n') + '\n'
+      : toAdd.join('\n') + '\n';
+    fs.writeFileSync(gitignorePath, content);
+  }
+}
 const READ_ONLY = ['status', 'fetch'];
 
 function isReadOnly(action) {
@@ -137,6 +158,7 @@ async function run(args) {
         case 'init': {
           if (hasGit) { console.log('  already initialized, skipping'); skipped++; break; }
           git(dir, 'init -b main');
+          seedGitignore(dir);
           git(dir, 'add -A');
           git(dir, 'commit -m "initial commit"');
           console.log('  initialized + initial commit');
@@ -224,4 +246,4 @@ async function run(args) {
   process.exit(failed > 0 ? 1 : 0);
 }
 
-module.exports = { run, parseArgs, ACTIONS, isReadOnly, requireProdroot };
+module.exports = { run, parseArgs, ACTIONS, isReadOnly, requireProdroot, seedGitignore };
