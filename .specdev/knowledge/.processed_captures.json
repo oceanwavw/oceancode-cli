@@ -1,10 +1,14 @@
 {
   "project": [
     "00001_feature_sync-repo",
-    "00002_feature_oceancode-cli"
+    "00002_feature_oceancode-cli",
+    "00003_feature_build-scripts",
+    "00004_feature_init-command"
   ],
   "workflow": [
     "00001_feature_sync-repo",
-    "00002_feature_oceancode-cli"
+    "00002_feature_oceancode-cli",
+    "00003_feature_build-scripts",
+    "00004_feature_init-command"
   ]
 }

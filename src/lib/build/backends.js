@@ -24,7 +24,7 @@ function buildVerifyCmd(pythonBin, pkgName) {
 
 function runCmd(cmd, opts) {
   console.log(`  $ ${cmd}`);
-  execSync(cmd, { stdio: 'inherit', ...opts });
+  execSync(cmd, { stdio: 'inherit', shell: true, ...opts });
 }
 
 async function buildBackends(config, workspaceRoot, targetPkg) {
@@ -126,7 +126,7 @@ async function buildBackends(config, workspaceRoot, targetPkg) {
   let pass = 0, fail = 0;
   for (const pkg of packages) {
     try {
-      execSync(buildVerifyCmd(pythonBin, pkg.name), { stdio: ['pipe', 'pipe', 'pipe'] });
+      execSync(buildVerifyCmd(pythonBin, pkg.name), { stdio: ['pipe', 'pipe', 'pipe'], shell: true });
       console.log(`  [PASS] ${pkg.name}`);
       pass++;
     } catch {
@@ -137,7 +137,7 @@ async function buildBackends(config, workspaceRoot, targetPkg) {
     if (pkg.rust_extension) {
       const extModule = pkg.name + '_rust';
       try {
-        execSync(buildVerifyCmd(pythonBin, extModule), { stdio: ['pipe', 'pipe', 'pipe'] });
+        execSync(buildVerifyCmd(pythonBin, extModule), { stdio: ['pipe', 'pipe', 'pipe'], shell: true });
         console.log(`  [PASS] ${extModule}`);
         pass++;
       } catch {

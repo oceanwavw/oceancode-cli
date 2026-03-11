@@ -1,0 +1,55 @@
+{
+  "tasks": [
+    {
+      "number": 1,
+      "name": "Unified config loader",
+      "status": "completed",
+      "started_at": "2026-03-11T04:19:15Z",
+      "completed_at": "2026-03-11T04:21:02Z"
+    },
+    {
+      "number": 2,
+      "name": "Migrate sync command to unified loader",
+      "status": "completed",
+      "started_at": "2026-03-11T04:21:02Z",
+      "completed_at": "2026-03-11T04:23:34Z"
+    },
+    {
+      "number": 3,
+      "name": "Migrate build and launch commands to cwd-based resolution",
+      "status": "completed",
+      "started_at": "2026-03-11T04:21:02Z",
+      "completed_at": "2026-03-11T04:23:34Z"
+    },
+    {
+      "number": 4,
+      "name": "Rename install to clone-prod",
+      "status": "completed",
+      "started_at": "2026-03-11T04:23:34Z",
+      "completed_at": "2026-03-11T04:27:03Z"
+    },
+    {
+      "number": 5,
+      "name": "Split git into git-dev and git-prod",
+      "status": "completed",
+      "started_at": "2026-03-11T04:23:34Z",
+      "completed_at": "2026-03-11T04:27:03Z"
+    },
+    {
+      "number": 6,
+      "name": ".gitignore seeding in git-prod init",
+      "status": "in_progress",
+      "started_at": "2026-03-11T04:27:03Z"
+    },
+    {
+      "number": 7,
+      "name": "Update init wizard to generate single oceancode.yaml",
+      "status": "pending"
+    },
+    {
+      "number": 8,
+      "name": "Cleanup — remove old loaders, tests, update dispatcher",
+      "status": "pending"
+    }
+  ]
+}

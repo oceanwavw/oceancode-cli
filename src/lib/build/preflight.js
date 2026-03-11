@@ -54,7 +54,7 @@ async function promptInstall(toolName, installInfo) {
 
   try {
     console.log(`Installing ${toolName}...`);
-    execSync(autoCmd, { stdio: 'inherit' });
+    execSync(autoCmd, { stdio: 'inherit', shell: true });
     return checkTool(toolName);
   } catch {
     console.error(`Failed to install ${toolName}. Install manually from ${installInfo.url}`);

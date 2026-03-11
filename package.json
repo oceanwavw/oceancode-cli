@@ -2,10 +2,15 @@
   "name": "oceancode",
   "version": "1.0.0",
   "description": "OceanWave workspace CLI",
-  "bin": { "oceancode": "./bin/oceancode.js" },
+  "bin": {
+    "oceancode": "./bin/oceancode.js"
+  },
   "type": "commonjs",
-  "scripts": { "test": "node --test 'test/*.test.js'" },
+  "scripts": {
+    "test": "node --test 'test/*.test.js'"
+  },
   "dependencies": {
+    "@clack/prompts": "^1.1.0",
     "fs-extra": "^11.3.4",
     "js-yaml": "^4.1.1",
     "micromatch": "^4.0.8"

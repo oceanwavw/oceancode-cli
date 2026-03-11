@@ -1,0 +1,81 @@
+'use strict';
+const { describe, it } = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
+const yaml = require('js-yaml');
+const { generateSyncConfig, generateBuildConfig, writeConfigAtomic } = require('../src/lib/configGen');
+const defaults = require('../src/lib/defaults');
+
+describe('config generation', () => {
+  it('generateSyncConfig produces valid repos object map', () => {
+    const selected = [defaults.repos[0], defaults.repos[1]];
+    const config = generateSyncConfig(selected);
+    assert.ok(config.repos);
+    assert.equal(typeof config.repos, 'object');
+    assert.equal(config.repos[selected[0].name], selected[0].path);
+    assert.equal(config.repos[selected[1].name], selected[1].path);
+  });
+
+  it('generateBuildConfig produces valid build.yaml structure', () => {
+    const opts = {
+      pythonVersion: '3.12',
+      venvTargets: [defaults.pythonVenvTargets[0]],
+      frontendTargets: [defaults.frontendTargets[0]],
+      goTargets: [defaults.goTargets[0]],
+      launchers: [defaults.launchers[0]],
+    };
+    const config = generateBuildConfig(opts);
+    assert.equal(config.python_version, '3.12');
+    assert.ok(config.venv);
+    assert.ok(config.venv[defaults.pythonVenvTargets[0].name]);
+    assert.ok(config.pypi_deps);
+    assert.ok(config.frontends);
+    assert.ok(config.cli_tools);
+    assert.ok(config.launchers);
+    assert.ok(config.preflight_tools);
+    assert.ok(config.tool_install);
+  });
+
+  it('generateBuildConfig includes launcher configs from defaults', () => {
+    const opts = { launchers: [defaults.launchers[0]] };
+    const config = generateBuildConfig(opts);
+    const name = defaults.launchers[0].name;
+    assert.ok(config.launchers[name]);
+    assert.ok(config.launchers[name].dev);
+    assert.ok(config.launchers[name].prod);
+  });
+
+  it('writeConfigAtomic writes file atomically', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-cg-'));
+    const filePath = path.join(tmpDir, 'test.yaml');
+    writeConfigAtomic(filePath, { repos: { foo: 'bar' } });
+    const content = yaml.load(fs.readFileSync(filePath, 'utf8'));
+    assert.deepEqual(content, { repos: { foo: 'bar' } });
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+
+  it('writeConfigAtomic does not leave temp file on error', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-cg-'));
+    const badPath = path.join(tmpDir, 'nonexistent', 'test.yaml');
+    assert.throws(() => writeConfigAtomic(badPath, {}));
+    // No .tmp file should exist
+    const files = fs.readdirSync(tmpDir);
+    assert.equal(files.length, 0);
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+
+  it('generated sync config is loadable by config.js', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-cg-'));
+    const filePath = path.join(tmpDir, 'sync_repos.yaml');
+    const config = generateSyncConfig(defaults.repos.slice(0, 3));
+    writeConfigAtomic(filePath, config);
+    // Load with config.js loader
+    const { loadConfig } = require('../src/lib/config');
+    const loaded = loadConfig(filePath);
+    assert.ok(loaded.repos);
+    assert.equal(Object.keys(loaded.repos).length, 3);
+    fs.rmSync(tmpDir, { recursive: true });
+  });
+});
