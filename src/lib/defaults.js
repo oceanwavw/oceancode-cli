@@ -2,28 +2,33 @@
 
 module.exports = {
   repos: [
-    { name: 'oceanfarm', path: 'lib/oceanfarm' },
+    // foundational
+    { name: 'jsonldb', path: 'lib/jsonldb' },
+    { name: 'oceanreact', path: 'lib/front_ends/oceanreact' },
+    { name: 'oceanutil', path: 'lib/oceanutil' },
     { name: 'oceanquant', path: 'lib/oceanquant' },
+    // core libraries
     { name: 'oceandata', path: 'lib/oceandata' },
+    { name: 'oceanfarm', path: 'lib/oceanfarm' },
     { name: 'oceanseed', path: 'lib/oceanseed' },
     { name: 'oceanlive', path: 'lib/oceanlive' },
-    { name: 'oceanutil', path: 'lib/oceanutil' },
     { name: 'oceancap', path: 'lib/oceancap' },
     { name: 'oceanreef', path: 'lib/oceanreef' },
-    { name: 'jsonldb', path: 'lib/jsonldb' },
     { name: 'dataportal', path: 'lib/dataportal' },
+    // back ends
     { name: 'oceandata_app', path: 'lib/back_ends/oceandata_app' },
     { name: 'oceanfarm_app', path: 'lib/back_ends/oceanfarm_app' },
     { name: 'oceanlive_app', path: 'lib/back_ends/oceanlive_app' },
     { name: 'oceanseed_app', path: 'lib/back_ends/oceanseed_app' },
     { name: 'oceanhub_app', path: 'lib/back_ends/oceanhub_app' },
+    // front ends
     { name: 'oceanapp', path: 'lib/front_ends/oceanapp' },
     { name: 'oceandata_gui', path: 'lib/front_ends/oceandata_gui' },
     { name: 'oceandata_tau', path: 'lib/front_ends/oceandata_tau' },
     { name: 'oceannode', path: 'lib/front_ends/oceannode' },
     { name: 'oceanpyqt', path: 'lib/front_ends/oceanpyqt' },
-    { name: 'oceanreact', path: 'lib/front_ends/oceanreact' },
     { name: 'oceanwave_dash', path: 'lib/front_ends/oceanwave_dash' },
+    // cli
     { name: 'oceandata-cli', path: 'lib/cli/oceandata-cli' },
   ],
 
