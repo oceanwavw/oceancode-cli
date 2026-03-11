@@ -9,7 +9,6 @@ module.exports = {
     { name: 'oceanlive', path: 'lib/oceanlive' },
     { name: 'oceanutil', path: 'lib/oceanutil' },
     { name: 'oceancap', path: 'lib/oceancap' },
-    { name: 'oceandoc', path: 'lib/oceandoc' },
     { name: 'oceanreef', path: 'lib/oceanreef' },
     { name: 'oceanshed', path: 'lib/oceanshed' },
     { name: 'jsonldb', path: 'lib/jsonldb' },
