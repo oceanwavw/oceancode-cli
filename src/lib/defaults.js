@@ -32,27 +32,6 @@ module.exports = {
     { name: 'oceandata-cli', path: 'lib/cli/oceandata-cli' },
   ],
 
-  pythonVenvTargets: [
-    { name: 'oceanwave_dash', path: 'lib/front_ends/oceanwave_dash' },
-    { name: 'oceandata_gui', path: 'lib/front_ends/oceandata_gui' },
-    { name: 'oceandata_tau', path: 'lib/front_ends/oceandata_tau' },
-    { name: 'dataportal', path: 'lib/dataportal' },
-    { name: 'oceanquant', path: 'lib/oceanquant' },
-  ],
-
-  frontendTargets: [
-    { name: 'oceanwave_dash', path: 'lib/front_ends/oceanwave_dash' },
-    { name: 'oceandata_tau', path: 'lib/front_ends/oceandata_tau' },
-    { name: 'dataportal', path: 'lib/dataportal' },
-    { name: 'oceanreact', path: 'lib/front_ends/oceanreact' },
-    { name: 'oceannode', path: 'lib/front_ends/oceannode' },
-  ],
-
-  goTargets: [
-    { name: 'oceandata-cli', path: 'lib/cli/oceandata-cli' },
-    { name: 'dataportal-go', path: 'lib/dataportal/go_backend' },
-  ],
-
   launchers: [
     { name: 'oceanwave_dash', label: 'OceanWave Dashboard' },
     { name: 'oceandata_gui', label: 'OceanData GUI' },
@@ -92,19 +71,6 @@ module.exports = {
         binary: { linux: 'bin/linux/oceanhub', macos: 'bin/macos/oceanhub', windows: 'bin/win/oceanhub.exe' },
       },
     },
-  },
-
-  pypiDeps: [
-    'loguru', 'base36', 'scipy', 'matplotlib', 'plotly', 'bokeh', 'numba',
-    'pandas', 'numpy', 'toml', 'fastapi', 'uvicorn', 'pydantic', 'httpx',
-    'pytest', 'pytest-asyncio', 'requests', 'pyyaml', 'python-dateutil',
-    'gitpython', 'gita', 'pandas-ta==0.4.71b0',
-  ],
-
-  preflightTools: {
-    backends: ['uv'],
-    frontends: ['node', 'npm'],
-    cli: ['go'],
   },
 
   toolInstall: {
