@@ -1,0 +1,39 @@
+{
+  "tasks": [
+    {
+      "number": 1,
+      "name": "Build yaml loader and validator",
+      "status": "completed",
+      "started_at": "2026-03-11T11:12:00Z",
+      "completed_at": "2026-03-11T11:15:12Z"
+    },
+    {
+      "number": 2,
+      "name": "Rewrite build command as step runner",
+      "status": "completed",
+      "started_at": "2026-03-11T11:15:19Z",
+      "completed_at": "2026-03-11T11:17:20Z"
+    },
+    {
+      "number": 3,
+      "name": "Update init wizard and configGen for new build format",
+      "status": "completed",
+      "started_at": "2026-03-11T11:17:26Z",
+      "completed_at": "2026-03-11T11:20:45Z"
+    },
+    {
+      "number": 4,
+      "name": "Clean up defaults.js",
+      "status": "completed",
+      "started_at": "2026-03-11T11:20:58Z",
+      "completed_at": "2026-03-11T11:22:29Z"
+    },
+    {
+      "number": 5,
+      "name": "Delete old build system files and update help",
+      "status": "completed",
+      "started_at": "2026-03-11T11:21:12Z",
+      "completed_at": "2026-03-11T11:24:07Z"
+    }
+  ]
+}

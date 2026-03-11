@@ -36,6 +36,12 @@ Running catalog of completed assignments. See `.specdev/_guides/task/validation_
 - **Description:** Consolidated `sync_repos.yaml` + `build.yaml` into single `oceancode.yaml`. Renamed `install` → `clone-prod`, split `git` → `git-dev` (status only) + `git-prod` (full ops). Unified config loader (`configLoader.js`) replaces two separate loaders. Dev root enforced as cwd, prod root from config. Repo path validation rejects absolute paths. `.gitignore` seeding on `git-prod init`.
 - **Key files:** `src/lib/configLoader.js`, `src/commands/clone-prod.js`, `src/commands/git-dev.js`, `src/commands/git-prod.js`, `src/commands/init.js`, `src/lib/configGen.js`, `bin/oceancode.js`
 
+### Per-Module Build System
+- **Assignment:** 00006_refactor_per-module-build
+- **Completed:** 2026-03-11
+- **Description:** Replaced central category-based build system (pythonVenvTargets/frontendTargets/goTargets with dedicated backends/frontends/cli builders) with per-module `oceancode.build.yaml` files. Each module declares its own tools and platform-specific build steps. Init wizard simplified from 3 category multiselects to single module selection. Config `build` section simplified from nested object to flat module name list.
+- **Key files:** `src/lib/buildLoader.js`, `src/commands/build.js`, `src/commands/init.js`, `src/lib/configGen.js`, `src/lib/defaults.js`, `src/lib/build/preflight.js`
+
 ---
 
 ## Architecture & Structure

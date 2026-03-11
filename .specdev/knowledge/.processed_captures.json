@@ -4,13 +4,15 @@
     "00002_feature_oceancode-cli",
     "00003_feature_build-scripts",
     "00004_feature_init-command",
-    "00005_refactor_config-consolidation"
+    "00005_refactor_config-consolidation",
+    "00006_refactor_per-module-build"
   ],
   "workflow": [
     "00001_feature_sync-repo",
     "00002_feature_oceancode-cli",
     "00003_feature_build-scripts",
     "00004_feature_init-command",
-    "00005_refactor_config-consolidation"
+    "00005_refactor_config-consolidation",
+    "00006_refactor_per-module-build"
   ]
 }

@@ -29,6 +29,7 @@ Below is a list of proposed assignments and their completion progress.
 | 00003 | build-scripts | Done | 2026-03-10 | Cross-platform build system + launchers |
 | 00004 | init-command | Done | 2026-03-11 | Interactive config wizard + prompts for all commands |
 | 00005 | config-consolidation | Done | 2026-03-11 | Unified oceancode.yaml, command renames, dev root enforcement |
+| 00006 | per-module-build | Done | 2026-03-11 | Per-module oceancode.build.yaml, simplified init wizard |
 
 ---
 
