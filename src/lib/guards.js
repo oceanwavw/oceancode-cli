@@ -7,15 +7,9 @@ async function validateDev2Prod(devDir, prodDir) {
   const devHasProdinclude = await fs.pathExists(path.join(devDir, '.prodinclude'));
   const devHasProdroot = await fs.pathExists(path.join(devDir, '.prodroot'));
   const prodHasProdroot = await fs.pathExists(path.join(prodDir, '.prodroot'));
-  const prodHasProdinclude = await fs.pathExists(path.join(prodDir, '.prodinclude'));
 
   if (devHasProdroot) {
     const err = new Error(`--dev path "${devDir}" contains .prodroot — this looks like a prod folder. Did you mean prod2dev?`);
-    err.isValidation = true;
-    throw err;
-  }
-  if (prodHasProdinclude) {
-    const err = new Error(`--prod path "${prodDir}" contains .prodinclude — this looks like a dev folder. Did you mean to swap --dev and --prod?`);
     err.isValidation = true;
     throw err;
   }
@@ -40,6 +34,7 @@ async function validateDev2Prod(devDir, prodDir) {
 
 async function validateProd2Dev(devDir, prodDir) {
   const devHasProdinclude = await fs.pathExists(path.join(devDir, '.prodinclude'));
+  const prodHasProdinclude = await fs.pathExists(path.join(prodDir, '.prodinclude'));
   const prodHasProdroot = await fs.pathExists(path.join(prodDir, '.prodroot'));
 
   if (!prodHasProdroot) {
@@ -47,8 +42,8 @@ async function validateProd2Dev(devDir, prodDir) {
     err.isValidation = true;
     throw err;
   }
-  if (!devHasProdinclude) {
-    const err = new Error(`--dev path "${devDir}" is missing .prodinclude. Is this the dev folder?`);
+  if (!devHasProdinclude && !prodHasProdinclude) {
+    const err = new Error(`No .prodinclude found in dev or prod. Create one to define which files to sync.`);
     err.isValidation = true;
     throw err;
   }

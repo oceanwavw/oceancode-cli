@@ -37,7 +37,6 @@ const SAFETY_NEGATIONS = [
   '.DS_Store',         '**/.DS_Store',
   // sync_repo markers
   '.prodroot',
-  '.prodinclude',
   '.prod_deletes',
 ];
 

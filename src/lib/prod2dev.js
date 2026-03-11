@@ -27,7 +27,9 @@ async function prod2dev(flags) {
     toCopy.push({ relPath, srcPath, dstPath });
   }
 
-  const { includes, negations } = await parseProdinclude(dev);
+  // Try prod first (available after clone-prod on fresh machine), fall back to dev
+  const prodHasProdinclude = await fs.pathExists(path.join(prod, '.prodinclude'));
+  const { includes, negations } = await parseProdinclude(prodHasProdinclude ? prod : dev);
   const devFiles = await walkTree(dev, SAFETY_NEGATIONS);
   const prodFileSet = new Set(prodFiles);
   const deleteCandidates = [];
