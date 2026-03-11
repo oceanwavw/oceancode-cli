@@ -31,7 +31,7 @@ DAILY WORKFLOW
   oceancode git-prod status [repos] — check git status across prod repos
   oceancode git-prod commit [repos] <msg> — commit across prod repos
   oceancode git-prod push [repos] <remote> — push prod repos
-  oceancode build [target] [package]       — build packages
+  oceancode build [module]                 — build modules
   oceancode launch <app>                   — launch a dev app
 
 COMMANDS
@@ -69,10 +69,9 @@ COMMANDS
       remote-add <name> <url>   — add a remote
     Flags: --config <path>
 
-  build [target] [package]
-    Build backend, frontend, and CLI packages.
-    Targets: all (default), backends, frontends, cli
-    Package: optional specific package name within target
+  build [module]
+    Build active modules listed in oceancode.yaml.
+    Each module reads its oceancode.build.yaml for build steps.
     Flags: --skip-preflight   skip tool availability checks
            --config <path>
 

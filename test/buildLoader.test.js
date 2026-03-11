@@ -92,4 +92,13 @@ describe('buildLoader', () => {
     assert.throws(() => validateBuildList(['a', '']), /non-empty string/);
     assert.throws(() => validateBuildList(['a', 123]), /non-empty string/);
   });
+
+  it('old category builders are deleted', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const srcDir = path.join(__dirname, '..', 'src', 'lib', 'build');
+    assert.equal(fs.existsSync(path.join(srcDir, 'backends.js')), false, 'backends.js should be deleted');
+    assert.equal(fs.existsSync(path.join(srcDir, 'frontends.js')), false, 'frontends.js should be deleted');
+    assert.equal(fs.existsSync(path.join(srcDir, 'cli.js')), false, 'cli.js should be deleted');
+  });
 });
