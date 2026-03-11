@@ -3,7 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
-const { loadConfig, resolveRepos } = require('../lib/config');
+const { loadConfig, requireSection, resolveRepos } = require('../lib/configLoader');
 
 const ACTIONS = ['status', 'commit', 'push', 'pull', 'fetch', 'remote-add', 'init'];
 const READ_ONLY = ['status', 'fetch'];
@@ -19,7 +19,7 @@ function requireProdroot(dir) {
 }
 
 function usage() {
-  console.error('Usage: oceancode git <action> [repos] [args] -t <path> [--config <f>]');
+  console.error('Usage: oceancode git-prod <action> [repos] [args] [--config <f>]');
   console.error('');
   console.error('Actions:');
   console.error('  status                     Show git status');
@@ -31,8 +31,7 @@ function usage() {
   console.error('  init                       Git init + initial commit');
   console.error('');
   console.error('Flags:');
-  console.error('  -t <path>      Base path containing repos');
-  console.error('  --config <f>   Config file (default: ./sync_repos.yaml)');
+  console.error('  --config <f>   Config file (default: ./oceancode.yaml)');
   process.exit(1);
 }
 
@@ -41,11 +40,9 @@ function parseArgs(args) {
   if (!action || !ACTIONS.includes(action)) usage();
 
   const flags = { positional: [] };
-  let repoArg = null;
 
   for (let i = 1; i < args.length; i++) {
     const a = args[i];
-    if (a === '-t' && args[i + 1]) { flags.target = path.resolve(args[++i]); continue; }
     if (a === '--config' && args[i + 1]) { flags.config = path.resolve(args[++i]); continue; }
     if (!a.startsWith('-')) {
       flags.positional.push(a);
@@ -53,8 +50,6 @@ function parseArgs(args) {
     }
     usage();
   }
-
-  if (!flags.target) { console.error('Error: missing -t <path>'); process.exit(1); }
 
   return { action, flags };
 }
@@ -64,8 +59,38 @@ function git(cwd, cmd) {
 }
 
 async function run(args) {
+  if (args.length === 0 && process.stdin.isTTY) {
+    const { select, multiselect, isCancel } = require('@clack/prompts');
+    const action = await select({
+      message: 'Git action:',
+      options: ACTIONS.map(a => ({ value: a, label: a })),
+    });
+    if (isCancel(action)) process.exit(0);
+
+    args = [action];
+
+    try {
+      const config = loadConfig();
+      const allRepos = resolveRepos(config, null);
+      const selected = await multiselect({
+        message: 'Select repos:',
+        options: allRepos.map(r => ({ value: r.name, label: r.name, hint: r.path })),
+        initialValues: allRepos.map(r => r.name),
+      });
+      if (isCancel(selected)) process.exit(0);
+      if (selected.length < allRepos.length) {
+        args.splice(1, 0, selected.join(','));
+      }
+    } catch {}
+  }
+
   const { action, flags } = parseArgs(args);
+
   const config = loadConfig(flags.config);
+  requireSection(config, 'workspace.prod_root');
+  requireSection(config, 'repos');
+
+  const prodRoot = path.resolve(config.workspace.prod_root);
 
   // Determine how many positional args the action consumes
   const EXPECTED_POSITIONALS = {
@@ -84,7 +109,7 @@ async function run(args) {
 
   for (let i = 0; i < repos.length; i++) {
     const repo = repos[i];
-    const dir = path.join(flags.target, repo.path);
+    const dir = path.join(prodRoot, repo.path);
 
     if (!fs.existsSync(dir)) {
       console.log(`[${i + 1}/${repos.length}] ${repo.name} — directory not found, skipping`);
@@ -199,4 +224,4 @@ async function run(args) {
   process.exit(failed > 0 ? 1 : 0);
 }
 
-module.exports = { run, isReadOnly, requireProdroot };
+module.exports = { run, parseArgs, ACTIONS, isReadOnly, requireProdroot };
