@@ -10,7 +10,6 @@ module.exports = {
     { name: 'oceanutil', path: 'lib/oceanutil' },
     { name: 'oceancap', path: 'lib/oceancap' },
     { name: 'oceanreef', path: 'lib/oceanreef' },
-    { name: 'oceanshed', path: 'lib/oceanshed' },
     { name: 'jsonldb', path: 'lib/jsonldb' },
     { name: 'dataportal', path: 'lib/dataportal' },
     { name: 'oceandata_app', path: 'lib/back_ends/oceandata_app' },
@@ -33,7 +32,6 @@ module.exports = {
     { name: 'oceandata_gui', path: 'lib/front_ends/oceandata_gui' },
     { name: 'oceandata_tau', path: 'lib/front_ends/oceandata_tau' },
     { name: 'dataportal', path: 'lib/dataportal' },
-    { name: 'oceanshed', path: 'lib/oceanshed' },
     { name: 'oceanquant', path: 'lib/oceanquant' },
   ],
 
