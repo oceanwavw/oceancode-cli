@@ -52,7 +52,7 @@ async function run(args) {
   if (isCancel(prodPath)) { outro('Cancelled.'); process.exit(0); }
 
   const selectedRepos = await multiselect({
-    message: 'Select repos:',
+    message: 'Select repos (Space to toggle, Enter to confirm):',
     options: defaults.repos.map(r => ({ value: r, label: r.name, hint: r.path })),
     initialValues: defaults.repos,
   });
