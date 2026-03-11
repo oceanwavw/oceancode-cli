@@ -16,30 +16,7 @@ function generateConfig(opts) {
   }
 
   // Build section
-  config.build = {};
-  config.build.python_version = opts.pythonVersion || '3.12';
-  config.build.venv = {};
-  for (const t of opts.venvTargets || []) {
-    config.build.venv[t.name] = {
-      path: t.path,
-      dir: { linux: 'venv-linux', macos: 'venv-linux', windows: 'venv-windows' },
-    };
-  }
-  config.build.pypi_deps = defaults.pypiDeps;
-  config.build.local_packages = [];
-  for (const r of opts.repos || []) {
-    config.build.local_packages.push({ name: r.name, path: r.path });
-  }
-  config.build.frontends = [];
-  for (const f of opts.frontendTargets || []) {
-    config.build.frontends.push({ name: f.name, path: f.path, verify: 'dist' });
-  }
-  config.build.cli_tools = [];
-  for (const g of opts.goTargets || []) {
-    config.build.cli_tools.push({ name: g.name, path: g.path, type: 'go' });
-  }
-  config.build.preflight_tools = defaults.preflightTools;
-  config.build.tool_install = defaults.toolInstall;
+  config.build = opts.buildModules || [];
 
   // Launchers section (top level)
   config.launchers = {};

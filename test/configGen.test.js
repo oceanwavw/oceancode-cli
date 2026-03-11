@@ -6,7 +6,6 @@ const path = require('path');
 const os = require('os');
 const yaml = require('js-yaml');
 const { generateConfig, writeConfigAtomic } = require('../src/lib/configGen');
-const defaults = require('../src/lib/defaults');
 
 describe('config generation', () => {
   it('writeConfigAtomic writes file atomically', () => {
@@ -28,23 +27,28 @@ describe('config generation', () => {
     fs.rmSync(tmpDir, { recursive: true });
   });
 
-  it('generateConfig produces unified oceancode.yaml structure', () => {
+  it('generateConfig produces build as array of module names', () => {
     const config = generateConfig({
       prodRoot: '/tmp/prod',
       repos: [{ name: 'oceanfarm', path: 'lib/oceanfarm' }],
-      pythonVersion: '3.12',
-      venvTargets: [{ name: 'oceanwave_dash', path: 'lib/front_ends/oceanwave_dash' }],
-      frontendTargets: [{ name: 'oceanreact', path: 'lib/front_ends/oceanreact' }],
-      goTargets: [{ name: 'oceandata-cli', path: 'lib/cli/oceandata-cli' }],
-      launchers: [{ name: 'oceanwave_dash', label: 'OceanWave Dashboard' }],
+      buildModules: ['oceanfarm'],
+      launchers: [],
     });
     assert.equal(config.workspace.prod_root, '/tmp/prod');
     assert.equal(config.repos.oceanfarm, 'lib/oceanfarm');
-    assert.equal(config.build.python_version, '3.12');
-    assert.ok(config.build.venv.oceanwave_dash);
-    assert.equal(config.build.frontends.length, 1);
-    assert.equal(config.build.cli_tools.length, 1);
-    assert.ok(config.launchers.oceanwave_dash);
+    assert.ok(Array.isArray(config.build));
+    assert.deepEqual(config.build, ['oceanfarm']);
+  });
+
+  it('generateConfig produces empty build array when no modules', () => {
+    const config = generateConfig({
+      prodRoot: '/tmp/prod',
+      repos: [{ name: 'oceanfarm', path: 'lib/oceanfarm' }],
+      buildModules: [],
+      launchers: [],
+    });
+    assert.ok(Array.isArray(config.build));
+    assert.deepEqual(config.build, []);
   });
 
   it('generated config is loadable by configLoader', () => {
@@ -52,9 +56,7 @@ describe('config generation', () => {
     const config = generateConfig({
       prodRoot: '/tmp/prod',
       repos: [{ name: 'a', path: 'lib/a' }],
-      venvTargets: [],
-      frontendTargets: [],
-      goTargets: [],
+      buildModules: ['a'],
       launchers: [],
     });
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'oc-gen-'));
