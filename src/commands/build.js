@@ -49,7 +49,12 @@ async function run(args) {
     console.error('Error: build section in oceancode.yaml must be a list of module names');
     process.exit(1);
   }
-  validateBuildList(buildList);
+  try {
+    validateBuildList(buildList);
+  } catch (e) {
+    console.error(`Error: ${e.message}`);
+    process.exit(1);
+  }
 
   // Filter to single module if specified
   let modulesToBuild = buildList;

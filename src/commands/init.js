@@ -1,6 +1,7 @@
 'use strict';
 const path = require('path');
 const fs = require('fs');
+const yaml = require('js-yaml');
 const defaults = require('../lib/defaults');
 const { generateConfig, writeConfigAtomic } = require('../lib/configGen');
 
@@ -30,7 +31,6 @@ async function run(args) {
   }
 
   const { intro, outro, text, multiselect, confirm, isCancel, note } = require('@clack/prompts');
-  const yaml = require('js-yaml');
 
   intro('oceancode init — workspace configuration wizard');
 
@@ -60,16 +60,27 @@ async function run(args) {
 
   // Scan selected repos for oceancode.build.yaml to find buildable modules
   const selectedNames = new Set(selectedRepos.map(r => r.name));
-  const buildableRepos = selectedRepos.filter(r =>
-    fs.existsSync(path.resolve(process.cwd(), r.path, 'oceancode.build.yaml'))
-  );
+  const buildableModules = [];
+  for (const r of selectedRepos) {
+    const buildYamlPath = path.resolve(process.cwd(), r.path, 'oceancode.build.yaml');
+    if (fs.existsSync(buildYamlPath)) {
+      let toolsHint = '';
+      try {
+        const doc = yaml.load(fs.readFileSync(buildYamlPath, 'utf8')) || {};
+        if (Array.isArray(doc.tools) && doc.tools.length > 0) {
+          toolsHint = `tools: ${doc.tools.join(', ')}`;
+        }
+      } catch { /* skip unreadable yaml */ }
+      buildableModules.push({ name: r.name, hint: toolsHint || r.path });
+    }
+  }
 
   let buildModules = [];
-  if (buildableRepos.length > 0) {
+  if (buildableModules.length > 0) {
     buildModules = await multiselect({
       message: 'Select modules to build:',
-      options: buildableRepos.map(r => ({ value: r.name, label: r.name, hint: r.path })),
-      initialValues: buildableRepos.map(r => r.name),
+      options: buildableModules.map(m => ({ value: m.name, label: m.name, hint: m.hint })),
+      initialValues: buildableModules.map(m => m.name),
       required: false,
     });
     if (isCancel(buildModules)) { outro('Cancelled.'); process.exit(0); }

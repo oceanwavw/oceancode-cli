@@ -14,24 +14,6 @@ function checkTool(name) {
   }
 }
 
-function getRequiredTools(config, targets) {
-  const tools = [];
-  for (const t of targets) {
-    const list = (config.preflight_tools || {})[t] || [];
-    for (const tool of list) {
-      if (!tools.includes(tool)) tools.push(tool);
-    }
-  }
-  // Add cargo if any local_packages have rust_extension and backends is in targets
-  if (targets.includes('backends')) {
-    const hasRust = (config.local_packages || []).some(p => p.rust_extension);
-    if (hasRust && !tools.includes('cargo')) {
-      tools.push('cargo');
-    }
-  }
-  return tools;
-}
-
 async function promptInstall(toolName, installInfo) {
   const platform = getPlatform();
   const autoCmd = installInfo.auto && installInfo.auto[platform];
@@ -62,32 +44,4 @@ async function promptInstall(toolName, installInfo) {
   }
 }
 
-async function runPreflight(config, targets) {
-  const tools = getRequiredTools(config, targets);
-  const missing = [];
-
-  for (const tool of tools) {
-    if (checkTool(tool)) {
-      console.log(`[OK] ${tool}`);
-    } else {
-      missing.push(tool);
-    }
-  }
-
-  if (missing.length === 0) return true;
-
-  for (const tool of missing) {
-    const installInfo = (config.tool_install || {})[tool];
-    if (!installInfo) {
-      console.error(`ERROR: ${tool} not found and no install info configured`);
-      return false;
-    }
-    const ok = await promptInstall(tool, installInfo);
-    if (!ok) return false;
-    console.log(`[INSTALLED] ${tool}`);
-  }
-
-  return true;
-}
-
-module.exports = { checkTool, getRequiredTools, promptInstall, runPreflight };
+module.exports = { checkTool, promptInstall };
